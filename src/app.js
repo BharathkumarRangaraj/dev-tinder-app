@@ -3,16 +3,12 @@ const app = express();
 const { connectDB } = require("./config/database");
 const user = require("./modal/user");
 
+app.use(express.json())
+
 //creating post API for signup.
 
 app.post("/signup", async (req, res) => {
-  const userdata = new user({
-    firstName: "Bharafth",
-    lastname: "Kumfar R",
-    age: 25,
-    email: "bharathf@123",
-    password: "Bharf@123",
-  });
+  const userdata = new user(req.body);
 
   try {
     await userdata.save();
