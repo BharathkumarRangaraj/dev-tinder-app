@@ -1,27 +1,23 @@
+const { userAuth, adminAuth } = require("./middleware/auth");
 const express = require("express");
 const app = express();
 
-//order does matter in routing
-app.get(
-  "/abc",
-  (req, res, next) => {
-    console.log("hey its one");
-    next();
-    // res.send({ name: "raja", age: "34" });
+//for user add/delete route
+app.use("/user", userAuth);
+app.get("/user/add", (req, res) => {
+  res.send("user is authnticated succesfully and added new user");
+});
+app.use("/user/delete", (req, res) => {
+  res.send("user is authnticated succesfully and deleted user");
+});
 
-  },
-  (req,res,next) => {
-    console.log("hey its 2");
+//admin routes
+app.use('/admin/login',(req,res)=>{
+  res.send('admin has logged in with out authorization')
+})
+app.use('/admin',adminAuth,(req,res)=>{
+  res.send('admin access is granded')
+})
 
-    // res.send("hey its 2");
-    next()
-  },
-    (req,res)=>{
-console.log('hey its 3');
-res.send('sending 3rd route paras')
-
-    }
-  
-);
 
 app.listen(7777, () => console.log("port running in 7777"));
