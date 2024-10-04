@@ -3,7 +3,7 @@ const userAuth=(req,res,next)=>{
     if(token!=='abc'){
         res.status(401).send('user authunticated failed')
     }else{
-        console.log('user sucess');
+       
         
        next()
     }
@@ -14,7 +14,7 @@ const adminAuth=(req,res,next)=>{
     if(token!=='abc'){
         res.status(401).send('admin authunticated failed')
     }else{
-        console.log('admin sucess');
+ 
        next();
     }
 }
