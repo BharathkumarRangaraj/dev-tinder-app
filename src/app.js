@@ -7,9 +7,9 @@ app.use(express.json());
 
 //creating post API for signup.
 app.post("/signup", async (req, res) => {
-  const userdata = new user(req.body);
 
-  try {
+  const userdata = new user(req.body);
+try {
     await userdata.save();
     res.send("user added successfully");
   } catch (error) {
@@ -62,11 +62,12 @@ app.delete("/user",async(req,res)=>{
 //update user form db
 
 app.patch('/user',async(req,res)=>{
+
   const userid=await req.body.userid;
   const data=await req.body;
   try{
 const users=await user.findByIdAndUpdate(userid,data);
-res.send('updated successfully')
+res.send('updated successfully');
   }
   catch (error) {
     console.log("error received", error.message);
