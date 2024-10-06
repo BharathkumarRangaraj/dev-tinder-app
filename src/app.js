@@ -65,7 +65,16 @@ app.patch('/user',async(req,res)=>{
 
   const userid=await req.body.userid;
   const data=await req.body;
+
   try{
+    const allowup=["firstName","lastName","password","gender"];
+    const allowedUpdateds=Object.keys(data).every((k)=>{
+      allowup.includes(k)
+    })
+    if(!allowedUpdateds){
+      throw new Error('not doable');
+      res.send('not doable')
+    }
 const users=await user.findByIdAndUpdate(userid,data);
 res.send('updated successfully');
   }
