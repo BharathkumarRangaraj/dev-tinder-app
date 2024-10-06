@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const { connectDB } = require("./config/database");
 const user = require("./modal/user");
+const {validateSignupData}=require("./utils/validation")
 
 app.use(express.json());
 
@@ -10,10 +11,15 @@ app.post("/signup", async (req, res) => {
 
   const userdata = new user(req.body);
 try {
+  //validate the inputs
+  validateSignupData(req);
+
+  //encrypting the password
+
     await userdata.save();
     res.send("user added successfully");
   } catch (error) {
-    console.log("error received", error.message);
+    res.status(400).send('ERROR:'+error.message)
   }
 });
 
@@ -30,7 +36,7 @@ app.get("/user", async (req, res) => {
       res.send(userr);
     }
   } catch (error) {
-    console.log("error received", error.message);
+    res.status(400).send('ERROR:'+error.message)
   }
 });
 
@@ -41,8 +47,8 @@ app.get("/fetch", async (req, res) => {
   try {
     const userr = await user.find({ });
     res.send(userr)
-  } catch (error) {
-    console.log("error received", error.message);
+  }catch (error) {
+    res.status(400).send('ERROR:'+error.message)
   }
 });
 
@@ -55,7 +61,7 @@ app.delete("/user",async(req,res)=>{
     res.send('user deleted successfully')
   }
   catch (error) {
-    console.log("error received", error.message);
+    res.status(400).send('ERROR:'+error.message)
   }
 })
 
@@ -79,7 +85,7 @@ const users=await user.findByIdAndUpdate(userid,data);
 res.send('updated successfully');
   }
   catch (error) {
-    console.log("error received", error.message);
+    res.status(400).send('ERROR:'+error.message)
   }
 })
 
