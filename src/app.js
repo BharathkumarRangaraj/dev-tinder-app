@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const { connectDB } = require("./config/database");
 const user = require("./modal/user");
-const {validateSignupData}=require("./utils/validation")
+const {validateSignupData}=require("./utils/validation");
+const bcrypt=require('bcrypt')
 
 app.use(express.json());
 
@@ -14,8 +15,18 @@ try {
   //validate the inputs
   validateSignupData(req);
 
+  const{firstName,lastname,email,password}=req.body;
   //encrypting the password
+const passwordhash=await bcrypt.hash(password,10);
+console.log(passwordhash)
 
+//creating new instance of modal
+const userdata=new user({
+firstName,
+lastname,
+email,
+password:passwordhash,
+})
     await userdata.save();
     res.send("user added successfully");
   } catch (error) {
