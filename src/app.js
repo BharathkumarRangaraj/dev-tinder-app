@@ -34,6 +34,31 @@ password:passwordhash,
   }
 });
 
+//login 
+app.post("/login", async (req, res) => {
+
+  
+try {
+  const {email,password} = req.body;
+  const users=await user.findOne({email:email})
+  if(!users){
+    res.send('Invalid user Credentials')
+  }
+  const isPasswordValid=await bcrypt.compare(password,users.password);
+  if(isPasswordValid){
+    res.send("login Successfull");
+  }else{
+    res.send('not in db')
+  }
+
+}
+  catch (error) {
+    res.status(400).send('ERROR:'+error.message)
+  }
+}
+)
+
+
 //get user by emailid
 app.get("/user", async (req, res) => {
   const oneuser = req.body.email;
