@@ -48,7 +48,7 @@ app.post("/login", async (req, res) => {
     }
     const isPasswordValid = await bcrypt.compare(password, users.password);
     if (isPasswordValid) {
-      const token = jwt.sign({ _id: user._id }, "tinderdev@123");
+      const token = jwt.sign({ _id: users._id }, "tinderdev@123");
       console.log(token,'tokenn');
       
       res.cookie("token",token);
@@ -66,6 +66,9 @@ const cookies=req.cookies;
 const{token}=cookies
 const decodedtoken = await jwt.verify(token, 'tinderdev@123');
 const{ _id }=decodedtoken;
+console.log(_id,'idddd')
+const userdata = await user.findById(_id);
+res.send(userdata)
 console.log(decodedtoken)
 res.send('readingcookie')
 
