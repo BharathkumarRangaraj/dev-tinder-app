@@ -6,6 +6,7 @@ const { validateSignupData } = require("./utils/validation");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const {userAuth}=require("./middleware/auth")
 
 app.use(express.json());
 app.use(cookieParser());
@@ -60,17 +61,10 @@ app.post("/login", async (req, res) => {
     res.status(400).send("ERROR:" + error.message);
   }
 });
-app.get("/profile",async(req,res)=>{
+app.get("/profile",userAuth,async(req,res)=>{
   try{
-const cookies=req.cookies;
-const{token}=cookies
-const decodedtoken = await jwt.verify(token, 'tinderdev@123');
-const{ _id }=decodedtoken;
-console.log(_id,'idddd')
-const userdata = await user.findById(_id);
-res.send(userdata)
-console.log(decodedtoken)
-res.send('readingcookie')
+const user=req.user;
+res.send(user);
 
   }
   catch (error) {
@@ -79,7 +73,7 @@ res.send('readingcookie')
 })
 
 //get user by emailid
-app.get("/user", async (req, res) => {
+app.get("/user",userAuth, async (req, res) => {
   const oneuser = req.body.email;
   try {
     const userr = await user.findOne({ mail: oneuser });
