@@ -49,10 +49,9 @@ app.post("/login", async (req, res) => {
     }
     const isPasswordValid = await bcrypt.compare(password, users.password);
     if (isPasswordValid) {
-      const token = jwt.sign({ _id: users._id }, "tinderdev@123");
-      console.log(token,'tokenn');
+      const token = await users.getJwt();
       
-      res.cookie("token",token);
+      res.cookie("token",token,{expires:new Date(Date.now()+8*3600000)});
       res.send("login Successfull");
     } else {
       res.send("not in db");
