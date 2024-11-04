@@ -6,70 +6,20 @@ const { validateSignupData } = require("./utils/validation");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const {userAuth}=require("./middleware/auth")
+const {userAuth}=require("./middleware/auth");
+const authRouters=require('./Routes/auths');
+const profileRouters=require('./Routes/profile');
+const requestsRouter=require('./Routes/requests');
+
 
 app.use(express.json());
 app.use(cookieParser());
 
-//creating post API for signup.
-app.post("/signup", async (req, res) => {
-  const userdata = new user(req.body);
-  try {
-    //validate the inputs
-    validateSignupData(req);
+//express.router group APIS
 
-    const { firstName, lastname, email, password } = req.body;
-    //encrypting the password
-    const passwordhash = await bcrypt.hash(password, 10);
-    console.log(passwordhash);
-
-    //creating new instance of modal
-    const userdata = new user({
-      firstName,
-      lastname,
-      email,
-      password: passwordhash,
-    });
-    await userdata.save();
-    res.send("user added successfully");
-  } catch (error) {
-    res.status(400).send("ERROR:" + error.message);
-  }
-});
-
-//login
-app.post("/login", async (req, res) => {
-  // const {cookies}=req.cookies;
-  // const token=cookies;
-  try {
-    const { email, password } = req.body;
-    const users = await user.findOne({ email: email });
-    if (!users) {
-      res.send("Invalid user Credentials");
-    }
-    const isPasswordValid = await users.validatePassword(password)
-    if (isPasswordValid) {
-      const token = await users.getJwt();
-      
-      res.cookie("token",token,{expires:new Date(Date.now()+8*3600000)});
-      res.send("login Successfull");
-    } else {
-      res.send("not in db");
-    }
-  } catch (error) {
-    res.status(400).send("ERROR:" + error.message);
-  }
-});
-app.get("/profile",userAuth,async(req,res)=>{
-  try{
-const user=req.user;
-res.send(user);
-
-  }
-  catch (error) {
-    res.status(400).send("ERROR:" + error.message);
-  }
-})
+app.use('/',authRouters);
+app.use('/',profileRouters);
+app.use('/',requestsRouter);
 
 //get user by emailid
 app.get("/user",userAuth, async (req, res) => {
@@ -89,7 +39,6 @@ app.get("/user",userAuth, async (req, res) => {
 });
 
 //get all the users //feed api
-
 app.get("/fetch", async (req, res) => {
   try {
     const userr = await user.find({});
@@ -100,19 +49,6 @@ app.get("/fetch", async (req, res) => {
 });
 
 //delete user from db
-
-app.delete("/user", async (req, res) => {
-  const userid = await req.body.userid;
-  try {
-    user.findByIdAndDelete(userid);
-    res.send("user deleted successfully");
-  } catch (error) {
-    res.status(400).send("ERROR:" + error.message);
-  }
-});
-
-//update user form db
-
 app.patch("/user", async (req, res) => {
   const userid = await req.body.userid;
   const data = await req.body;
