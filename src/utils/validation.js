@@ -18,14 +18,7 @@ const validateEditProfileData = (req) => {
   );
   return isEditAllowed;
 };
-
-const validateForgotPassword=(req)=>{
-  const allowedEditFields = ["password"];
-  const isUpdatePassword=Object.keys(req.body.password).every((field)=>allowedEditFields.includes(field))
-
-}
 module.exports = {
   validateSignupData,
   validateEditProfileData,
-  validateForgotPassword
 };
