@@ -29,5 +29,40 @@ authRouter.post("/signup", async (req, res) => {
   }
 });
 
+//login
+authRouter.post("/login", async (req, res) => {
+  // const {cookies}=req.cookies;
+  // const token=cookies;
+  try {
+    const { email, password } = req.body;
+    const users = await user.findOne({ email: email });
+    if (!users) {
+      res.send("Invalid user Credentials");
+    }
+    const isPasswordValid = await users.validatePassword(password);
+    if (isPasswordValid) {
+      const token = await users.getJwt();
+
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
+      res.send("login Successfull");
+    } else {
+      res.send("not in db");
+    }
+  } catch (error) {
+    res.status(400).send("ERROR:" + error.message);
+  }
+});
+
+//logout
+authRouter.post("/logout",async(req,res)=>{
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
+res.send('logged out successfully!!')
+
+})
+
 
 module.exports = authRouter;
