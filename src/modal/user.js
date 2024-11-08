@@ -43,6 +43,14 @@ const UserSchema = new mongoose.Schema({
       }
     },
   },
+  gender:{
+    type:String,
+    enum:{
+      values:['male','female','other'],
+      message:`{VALUE} is not defined in db`
+    }
+
+  },
   age: {
     type: Number,
     validate(value) {
@@ -51,19 +59,21 @@ const UserSchema = new mongoose.Schema({
       }
     },
   },
-  gender: {
-    type: String,
-    validate(value) {
-      if (["male", "female"].includes(value)) {
-        throw new Error("gender eeor");
-      }
-    },
-  },
+  // gender: {
+  //   type: String,
+  //   validate(value) {
+  //     if (["male", "female"].includes(value)) {
+  //       throw new Error("gender eeor");
+  //     }
+  //   },
+  // },
   about: {
     type: String,
     default: "hey all this ",
-    timestamps: true,
+  
   },
+},{
+  timestamps: true,
 });
 UserSchema.methods.getJwt=async function(){
   const users=this;
