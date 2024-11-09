@@ -89,4 +89,7 @@ UserSchema.methods.validatePassword=async function(passwordbyuser){
   return isPasswordValid;
 
 }
+
+//to make the firstName and Lastname search first
+UserSchema.index({firstName:1,lastname:1})
 module.exports = mongoose.model("User", UserSchema);
