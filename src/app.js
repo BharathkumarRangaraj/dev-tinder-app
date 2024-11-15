@@ -11,10 +11,16 @@ const authRouters=require('./Routes/auths');
 const profileRouters=require('./Routes/profile');
 const requestsRouter=require('./Routes/requests');
 const userRouter = require("./Routes/user");
+const cors=require('cors')
 
+//fix cors error and to add cookies in browser application
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin:"http://localhost:5173",
+  credentials:true
+}))
 
 //express.router group APIS
 
