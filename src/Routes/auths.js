@@ -37,7 +37,7 @@ authRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const users = await user.findOne({ email: email });
     if (!users) {
-      res.send("Invalid user Credentials");
+      res.status(400).send("Invalid user Credentials");
     }
     const isPasswordValid = await users.validatePassword(password);
     if (isPasswordValid) {
@@ -48,7 +48,7 @@ authRouter.post("/login", async (req, res) => {
       });
       res.send(users);
     } else {
-      res.send("not in db");
+      throw new Error("Invalid credentials");
     }
   } catch (error) {
     res.status(400).send("ERROR:" + error.message);

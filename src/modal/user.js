@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema({
     lowercase: true,
     validate(value) {
       if (!validator.isEmail(value)) {
-        throw new Error("emailnot valid");
+        throw new Error("Invalid email address: " + value);
       }
     },
   },
@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
     required:true,
     validate(value) {
       if (!validator.isStrongPassword(value)) {
-        throw new Error("emailnot valid");
+        throw new Error("Enter a Strong Password: " + value);
       }
     },
   },
@@ -68,10 +68,21 @@ const UserSchema = new mongoose.Schema({
   //     }
   //   },
   // },
+  photoUrl: {
+    type: String,
+    default: "https://geographyandyou.com/images/user-profile.png",
+    validate(value) {
+      if (!validator.isURL(value)) {
+        throw new Error("Invalid Photo URL: " + value);
+      }
+    },
+  },
   about: {
     type: String,
-    default: "hey all this ",
-  
+    default: "This is a default about of the user!",
+  },
+  skills: {
+    type: [String],
   },
 },{
   timestamps: true,
