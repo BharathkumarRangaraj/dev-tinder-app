@@ -103,7 +103,7 @@ requestsRouter.post(
       const {requestId}=req.params.requestId;
 
       const allowedStatus = ["accepted", "rejected"];
-      if (!allowedStatus.includes(status)) {
+      if (allowedStatus.includes(status)) {
         return res.status(400).json({ messaage: "Status not allowed!" });
       }
 
