@@ -8,7 +8,6 @@ const UserSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
-      unique: true,
       timestamps: {
         createdAt: "created_at", // Use `created_at` to store the created date
         updatedAt: "updated_at", // and `updated_at` to store the last updated date
@@ -19,13 +18,11 @@ const UserSchema = new mongoose.Schema(
     lastname: {
       type: String,
       required: true,
-      unique: true,
       timestamps: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true,
       //index:true
       minLength: 4,
       maxLength: 45,
