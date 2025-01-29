@@ -34,29 +34,34 @@ authRouter.post("/signup", async (req, res) => {
 
 //login
 authRouter.post("/login", async (req, res) => {
-  // const {cookies}=req.cookies;
-  // const token=cookies;
   try {
     const { email, password } = req.body;
-    const users = await user.findOne({ email: email });
-    if (!users) {
-      res.status(400).send("Invalid user Credentials");
-    }
-    const isPasswordValid = await users.validatePassword(password);
-    if (isPasswordValid) {
-      const token = await users.getJwt();
 
-      res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000),
-      });
-      res.send(users);
-    } else {
-      throw new Error("Invalid credentials");
+    // Check if user exists
+    const users = await user.findOne({ email });
+    if (!users) {
+      return res.status(400).json({ message: "Invalid user credentials" });
     }
+
+    // Validate password
+    const isPasswordValid = await users.validatePassword(password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    const token = await users.getJwt();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+      httpOnly: true, // Security improvement
+    });
+
+    return res.status(200).json({ message: "Login successful", user: users });
   } catch (error) {
-    res.status(400).send("ERROR:" + error.message);
+    return res.status(500).json({ message: error.message || "Internal Server Error" });
   }
 });
+
 
 //logout
 authRouter.post("/logout", async (req, res) => {
