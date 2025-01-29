@@ -5,27 +5,30 @@ const bcrypt = require("bcrypt");
 const authRouter = express.Router();
 //signup
 authRouter.post("/signup", async (req, res) => {
-  const userdata = new user(req.body);
   try {
-    //validate the inputs
-    validateSignupData(req);
+    // Validate input data
+    const errors = validateSignupData(req);
+    if (errors) {
+      return res.status(400).json({ success: false, message: errors });
+    }
 
     const { firstName, lastname, email, password } = req.body;
-    //encrypting the password
-    const passwordhash = await bcrypt.hash(password, 10);
-    console.log(passwordhash);
 
-    //creating new instance of modal
-    const userdata = new user({
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const newUser = new user({
       firstName,
       lastname,
       email,
-      password: passwordhash,
+      password: passwordHash,
     });
-    await userdata.save();
-    res.send("user added successfully");
+
+    await newUser.save();
+    res.status(201).json({ success: true, message: "User added successfully" });
   } catch (error) {
-    res.status(400).send("ERROR:" + error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 

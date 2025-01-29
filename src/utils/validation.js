@@ -1,15 +1,22 @@
 const validation = require("validator");
 
 const validateSignupData = (req) => {
-  const { firstName, lastname, email, age, password } = req.body;
+  const { firstName, lastname, email, password } = req.body;
+  let errors = [];
+
   if (!firstName || !lastname) {
-    throw new Error("name is not valid");
-  } else if (!validation.isEmail(email)) {
-    throw new Error("email is not valid");
-  } else if (!validation.isStrongPassword(password)) {
-    throw new Error("password must be strong ");
+    errors.push("Name is not valid");
   }
+  if (!validation.isEmail(email)) {
+    errors.push("Email is not valid");
+  }
+  if (!password || password.length < 6) {
+    errors.push("Password must be at least 6 characters");
+  }
+
+  return errors.length > 0 ? errors : null;
 };
+
 const validateEditProfileData = (req) => {
   const allowedEditFields = [
     "firstName",
@@ -27,6 +34,7 @@ const validateEditProfileData = (req) => {
   );
   return isEditAllowed;
 };
+
 module.exports = {
   validateSignupData,
   validateEditProfileData,
